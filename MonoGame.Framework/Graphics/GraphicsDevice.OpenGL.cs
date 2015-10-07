@@ -201,6 +201,7 @@ namespace Microsoft.Xna.Framework.Graphics
             if (!string.IsNullOrEmpty(extstring))
             {
                 extensions.AddRange(extstring.Split(' '));
+#if DEBUG
 #if ANDROID
                 Android.Util.Log.Debug("MonoGame", "Supported extensions:");
 #else
@@ -211,6 +212,7 @@ namespace Microsoft.Xna.Framework.Graphics
                     Android.Util.Log.Debug("MonoGame", extension);
 #else
                     System.Diagnostics.Debug.WriteLine(extension);
+#endif
 #endif
             }
 
@@ -840,6 +842,23 @@ namespace Microsoft.Xna.Framework.Graphics
             if (_vertexShaderDirty || _pixelShaderDirty)
             {
                 ActivateShaderProgram();
+
+                if (_vertexShaderDirty)
+                {
+                    unchecked
+                    {
+                        _graphicsMetrics._vertexShaderCount++;
+                    }
+                }
+
+                if (_pixelShaderDirty)
+                {
+                    unchecked
+                    {
+                        _graphicsMetrics._pixelShaderCount++;
+                    }
+                }
+
                 _vertexShaderDirty = _pixelShaderDirty = false;
             }
 

@@ -439,7 +439,7 @@ namespace Microsoft.Xna.Framework.Graphics
                         // Creates a SwapChain from a CoreWindow pointer.
                         var coreWindow = Marshal.GetObjectForIUnknown(PresentationParameters.DeviceWindowHandle) as CoreWindow;
                         using (var comWindow = new ComObject(coreWindow))
-#if WINDOWS_PHONE81 || WINDOWS_UAP
+#if WINDOWS_PHONE81 || WINDOWS_UAP || WINRT
                            _swapChain = new SwapChain1(dxgiFactory2, dxgiDevice2, comWindow, ref desc);
 #else
                            _swapChain = dxgiFactory2.CreateSwapChainForCoreWindow(_d3dDevice, comWindow, ref desc, null);
@@ -458,7 +458,7 @@ namespace Microsoft.Xna.Framework.Graphics
 						_swapChainBackgroundPanel = PresentationParameters.SwapChainBackgroundPanel;
                         using (var nativePanel = ComObject.As<SharpDX.DXGI.ISwapChainBackgroundPanelNative>(PresentationParameters.SwapChainBackgroundPanel))
                         {
-#if WINDOWS_PHONE81
+#if WINDOWS_PHONE81 || WINRT
                             _swapChain = new SwapChain1(dxgiFactory2, dxgiDevice2, ref desc, null);
 #else
                             _swapChain = dxgiFactory2.CreateSwapChainForComposition(_d3dDevice, ref desc, null);
@@ -1171,8 +1171,14 @@ namespace Microsoft.Xna.Framework.Graphics
                 throw new InvalidOperationException("A pixel shader must be set!");
 
             if (_vertexShaderDirty)
+            {
                 _d3dContext.VertexShader.Set(_vertexShader.VertexShader);
 
+                unchecked
+                {
+                    _graphicsMetrics._vertexShaderCount++;
+                }
+            }
             if (_vertexShaderDirty || _vertexBufferDirty)
             {
                 _d3dContext.InputAssembler.InputLayout = GetInputLayout(_vertexShader, _vertexBuffer.VertexDeclaration);
@@ -1183,6 +1189,11 @@ namespace Microsoft.Xna.Framework.Graphics
             {
                 _d3dContext.PixelShader.Set(_pixelShader.PixelShader);
                 _pixelShaderDirty = false;
+
+                unchecked
+                {
+                    _graphicsMetrics._pixelShaderCount++;
+                }
             }
 
             _vertexConstantBuffers.SetConstantBuffers(this);
@@ -1401,5 +1412,12 @@ namespace Microsoft.Xna.Framework.Graphics
             return graphicsProfile;
         }
 
+#if WINDOWS_STOREAPP || WINDOWS_UAP
+        internal void Trim()
+        {
+            using (var dxgiDevice3 = _d3dDevice.QueryInterface<SharpDX.DXGI.Device3>())
+                dxgiDevice3.Trim();
+        }
+#endif
     }
 }

@@ -722,7 +722,10 @@
       <Platforms>Web</Platforms>
     </Compile>
     <Compile Include="Input\GamePad.XInput.cs">
-      <Platforms>Windows8,Windows,WindowsUAP</Platforms>
+      <Platforms>Windows8,Windows</Platforms>
+    </Compile>
+    <Compile Include="Input\GamePad.UWP.cs">
+      <Platforms>WindowsUAP</Platforms>
     </Compile>
     <Compile Include="Input\GamePadButtons.cs" />
     <Compile Include="Input\GamePadCapabilities.cs" />
@@ -780,7 +783,6 @@
     </Compile>
     <Compile Include="Input\Mouse.cs" />
     <Compile Include="Input\MouseState.cs" />
-    <Compile Include="Input\ThumbStickDefinition.cs" />
     <Compile Include="Input\Touch\GestureSample.cs" />
     <Compile Include="Input\Touch\GestureType.cs" />
     <Compile Include="Input\Touch\TouchCollection.cs" />
@@ -1103,6 +1105,9 @@
     <Compile Include="WindowsUAP\XamlGame.cs">
       <Platforms>WindowsUAP</Platforms>
     </Compile>	  
+    <None Include="project.json">
+      <Platforms>WindowsUAP</Platforms>
+    </None>
 
 	  
     <!-- Windows Desktop Platfom -->
