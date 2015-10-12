@@ -232,6 +232,36 @@ namespace Microsoft.Xna.Framework
 
             return result;
         }
+
+        public static float Pow2(float x)            // Using inline calls
+        {
+            return (x * x);
+        }
+
+        public unsafe static float InvSqrt(float x)
+        {
+            float xhalf = 0.5f * x;
+            int i = *(int*)&x; // get bits for floating value
+            i = 0x5f375a86 - (i >> 1); // gives initial guess y0
+            x = *(float*)&i; // convert bits back to float
+            x = x * (1.5f - xhalf * x * x); // Newton step, repeating increases accuracy
+            return x;
+        }
+
+        public static float Sqrt2(float x)
+        {
+            return x * MathHelper.InvSqrt(x);
+        }
+
+        public unsafe static float Sqrt(float x)
+        {
+            uint i = *(uint*)&x;
+            // adjust bias
+            i += 127 << 23;
+            // approximation of square root
+            i >>= 1;
+            return *(float*)&i;
+        }
         
         /// <summary>
         /// Converts radians to degrees.

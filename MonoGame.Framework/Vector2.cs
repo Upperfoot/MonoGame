@@ -251,6 +251,26 @@ namespace Microsoft.Xna.Framework
 
         #region Public Methods
 
+        public static Vector2 MoveTo(Vector2 value1, Vector2 value2, float amount, bool reached = false)
+        {
+            if (value1.X != value2.X || value1.Y != value2.Y)
+            {
+                float distance = MathHelper.Sqrt(MathHelper.Pow2(value2.X - value1.X) + MathHelper.Pow2(value2.Y - value1.Y));
+
+                Vector2 LastPosition = value1;
+
+                value1.X += ((value2.X - value1.X) / distance) * amount;
+                value1.Y += ((value2.Y - value1.Y) / distance) * amount;
+
+                if (reached && MathHelper.Sqrt(MathHelper.Pow2(value1.X - LastPosition.X) + MathHelper.Pow2(value1.Y - LastPosition.Y)) >= distance)
+                {
+                    value1 = value2;
+                }
+            }
+
+            return value1;
+        }
+
         /// <summary>
         /// Performs vector addition on <paramref name="value1"/> and <paramref name="value2"/>.
         /// </summary>
